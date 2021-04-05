@@ -44,6 +44,7 @@ pipelines:
         --repo-resolve gradle-virtual
       - jfrog rt npm-config --server-id-resolve RobiNino_mvn_gradle_npm_pipelines_serverId
         --repo-resolve npm-virtual
+      - echo "ls"
       - ls
       - jfrog rt npmi && jfrog rt gradle clean artifactoryPublish && jfrog rt mvn
         clean install
