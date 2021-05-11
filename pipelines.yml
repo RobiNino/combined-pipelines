@@ -1,0 +1,84 @@
+resources:
+- name: RobiNino_mvn-gradle-npm-pipelines_gitResource
+  type: GitRepo
+  configuration:
+    path: RobiNino/mvn-gradle-npm-pipelines
+    gitProvider: github_robi
+    buildOn:
+      pullRequestCreate: true
+    branches:
+      include: main
+- name: RobiNino_mvn-gradle-npm-pipelines_buildInfoResource
+  type: BuildInfo
+  configuration:
+    sourceArtifactory: robindev
+    buildName: $pipeline_name
+    buildNumber: $run_number
+pipelines:
+- name: RobiNino_mvn-gradle-npm-pipelines_pipeline
+  steps:
+  - name: MvnBuildStep
+    type: MvnBuild
+    configuration:
+      environmentVariables:
+        JFROG_BUILD_STATUS: PASS
+        JFROG_CLI_BUILD_URL: $step_url
+      integrations:
+      - name: robindev
+      inputResources:
+      - name: RobiNino_mvn-gradle-npm-pipelines_gitResource
+      outputResources:
+      - name: RobiNino_mvn-gradle-npm-pipelines_buildInfoResource
+      mvnCommand: clean install
+      resolverSnapshotRepo: maven-virtual
+      resolverReleaseRepo: maven-virtual
+    execution:
+      onComplete:
+      - update_commit_status RobiNino_mvn-gradle-npm-pipelines_gitResource
+      onFailure:
+      - export JFROG_BUILD_STATUS=FAIL
+      - jfrog rt bce
+      - jfrog rt bp
+  - name: BuildStep
+    type: Bash
+    configuration:
+      inputResources:
+        - name: RobiNino_npm_example_pipelines_gitResource
+      integrations:
+        - name: robindev
+      outputResources:
+        - name: RobiNino_npm_example_pipelines_biResource
+    execution:
+      onExecute:
+      - jfrog -v
+      - cd $res_RobiNino_npm_example_pipelines_gitResource_resourcePath
+      - export CI=true
+      - export JFROG_CLI_BUILD_NAME=$pipeline_name
+      - export JFROG_CLI_BUILD_NUMBER=$run_number
+      - export JFROG_CLI_BUILD_URL=$step_url
+      - export JFROG_BUILD_RESULTS=PASS
+      - export JFROG_CLI_LOG_LEVEL=DEBUG
+      - jfrog rt c RobiNino_npm_example_pipelines_serverId --url $int_robindev_url
+        --user $int_robindev_user --apikey $int_robindev_apikey
+        --enc-password=false
+      - jfrog rt npm-config --server-id-resolve RobiNino_npm_example_pipelines_serverId
+        --repo-resolve global-npm --server-id-deploy RobiNino_npm_example_pipelines_serverId --repo-deploy global-npm
+      - jfrog rt npmi
+      - jfrog rt npm-publish
+      - jfrog rt bag
+      - jfrog rt bce
+      onComplete:
+      - update_commit_status RobiNino_npm_example_pipelines_gitResource
+      - add_run_files /tmp/jfrog/. jfrog
+      onFailure:
+      - export JFROG_BUILD_RESULTS=FAIL
+      - jfrog rt bce
+      - jfrog rt bp
+  - name: PublishBuildInfoStep
+    type: PublishBuildInfo
+    configuration:
+      outputResources:
+      - name: RobiNino_mvn-gradle-npm-pipelines_buildInfoResource
+      inputSteps:
+      - name: BuildStep
+      forceXrayScan: true
