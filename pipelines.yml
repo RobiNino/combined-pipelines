@@ -2,7 +2,7 @@ resources:
 - name: RobiNino_mvn_gradle_npm_pipelines_gitResource
   type: GitRepo
   configuration:
-    path: RobiNino/mvn_gradle_npm_pipelines
+    path: RobiNino/mvn-gradle-npm-pipelines
     gitProvider: github_robi
     buildOn:
       pullRequestCreate: true
