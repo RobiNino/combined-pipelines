@@ -21,13 +21,13 @@ pipelines:
     type: Bash
     configuration:
       inputResources:
-        - name: RobiNino_npm_example_pipelines_gitResource
+        - name: RobiNino_mvn_gradle_npm_pipelines_gitResource
       integrations:
         - name: robindev
     execution:
       onExecute:
       - jfrog -v
-      - cd $res_RobiNino_npm_example_pipelines_gitResource_resourcePath
+      - cd $res_RobiNino_mvn_gradle_npm_pipelines_gitResource_resourcePath
       - export CI=true
       - export JFROG_CLI_BUILD_NAME=$pipeline_name
       - export JFROG_CLI_BUILD_NUMBER=$run_number
@@ -44,7 +44,7 @@ pipelines:
       - jfrog rt bag
       - jfrog rt bce
       onComplete:
-      - update_commit_status RobiNino_npm_example_pipelines_gitResource
+      - update_commit_status RobiNino_mvn_gradle_npm_pipelines_gitResource
       - add_run_files /tmp/jfrog/. jfrog
       onFailure:
       - export JFROG_BUILD_RESULTS=FAIL
