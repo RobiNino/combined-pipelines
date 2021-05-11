@@ -77,6 +77,8 @@ pipelines:
   - name: PublishBuildInfoStep
     type: PublishBuildInfo
     configuration:
+      outputResources:
+      - name: RobiNino_mvn_gradle_npm_pipelines_buildInfoResource
       inputSteps:
       - name: MvnBuildStep
       forceXrayScan: true
