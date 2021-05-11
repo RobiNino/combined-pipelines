@@ -60,8 +60,6 @@ pipelines:
       - name: robindev
       inputResources:
       - name: RobiNino_mvn_gradle_npm_pipelines_gitResource
-      outputResources:
-      - name: RobiNino_mvn_gradle_npm_pipelines_buildInfoResource
       mvnCommand: clean install
       resolverSnapshotRepo: maven-virtual
       resolverReleaseRepo: maven-virtual
