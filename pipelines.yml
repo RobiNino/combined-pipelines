@@ -47,7 +47,7 @@ pipelines:
       integrations:
         - name: robindev
       outputResources:
-        - name: RobiNino_npm_example_pipelines_biResource
+        - name: RobiNino_mvn_gradle_npm_pipelines_buildInfoResource
     execution:
       onExecute:
       - jfrog -v
