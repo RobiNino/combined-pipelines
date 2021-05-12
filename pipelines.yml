@@ -16,6 +16,10 @@ resources:
     buildNumber: $run_number
 pipelines:
 - name: RobiNino_mvn_gradle_npm_pipelines_pipeline
+  configuration:
+    environmentVariables:
+      readOnly:
+        CI: "true"
   steps:
   - name: MvnBuildStep
     type: MvnBuild
