@@ -62,7 +62,6 @@ pipelines:
 #      - jfrog rt npmp
       - jfrog rt bag
       - jfrog rt bce
-      - jfrog rt bp
       onComplete:
       - update_commit_status RobiNino_mvn_gradle_npm_pipelines_gitResource
       - add_run_files /tmp/jfrog/. jfrog
