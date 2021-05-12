@@ -19,12 +19,12 @@ pipelines:
   configuration:
     environmentVariables:
       readOnly:
+        CI: "true"
+        JFROG_BUILD_STATUS: PASS
         JFROG_CLI_BUILD_NAME: build_name_aggregated
         JFROG_CLI_BUILD_NUMBER: $run_number
         JFROG_CLI_BUILD_PROJECT: $project_key
-        JFROG_BUILD_STATUS: PASS
         JFROG_CLI_BUILD_URL: $step_url
-        JFROG_CLI_LOG_LEVEL: DEBUG
   steps:
   - name: MvnBuildStep
     type: MvnBuild
@@ -55,11 +55,9 @@ pipelines:
     execution:
       onExecute:
       - cd $res_RobiNino_mvn_gradle_npm_pipelines_gitResource_resourcePath
-      - export CI=true
       - jfrog rt c RobiNino_mvn_gradle_npm_pipelines_serverId --url $int_robindev_url --user $int_robindev_user --apikey $int_robindev_apikey --enc-password=false
       - jfrog rt npm-config --server-id-resolve RobiNino_mvn_gradle_npm_pipelines_serverId --repo-resolve global-npm
       - jfrog rt npmi
-#      - jfrog rt npmp
       - jfrog rt bag
       - jfrog rt bce
       onComplete:
