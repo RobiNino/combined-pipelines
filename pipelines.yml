@@ -51,6 +51,8 @@ pipelines:
       - name: robindev
       inputResources:
       - name: RobiNino_mvn_gradle_npm_pipelines_gitResource
+      inputSteps:
+      - name: MvnBuildStep
     execution:
       onExecute:
       - cd $res_RobiNino_mvn_gradle_npm_pipelines_gitResource_resourcePath
