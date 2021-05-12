@@ -34,8 +34,8 @@ pipelines:
   - name: MvnBuildStep
     type: MvnBuild
     configuration:
-        environmentVariables:
-          JFROG_BUILD_STATUS: PASS
+      environmentVariables:
+        JFROG_BUILD_STATUS: PASS
       integrations:
       - name: robindev
       inputResources:
