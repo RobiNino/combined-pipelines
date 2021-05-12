@@ -19,7 +19,7 @@ pipelines:
   configuration:
     environmentVariables:
       readOnly:
-        CI: true
+        CI: "true"
         JFROG_CLI_BUILD_NAME: build_name_aggregated
         JFROG_CLI_BUILD_NUMBER: $run_number
         JFROG_CLI_BUILD_PROJECT: $project_key
