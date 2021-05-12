@@ -39,7 +39,7 @@ pipelines:
       - name: robindev
       inputResources:
       - name: RobiNino_mvn_gradle_npm_pipelines_gitResource
-      mvnCommand: cleannnnnn install
+      mvnCommand: clean install
       resolverSnapshotRepo: maven-virtual
       resolverReleaseRepo: maven-virtual
     execution:
@@ -58,15 +58,12 @@ pipelines:
       - cd $res_RobiNino_mvn_gradle_npm_pipelines_gitResource_resourcePath
       - jfrog rt c RobiNino_mvn_gradle_npm_pipelines_serverId --url $int_robindev_url --user $int_robindev_user --apikey $int_robindev_apikey --enc-password=false
       - jfrog rt npm-config --server-id-resolve RobiNino_mvn_gradle_npm_pipelines_serverId --repo-resolve global-npm
-      - jfrog rt npmi
+      - jfrog rt npmiiiii
       - jfrog rt bag
       - jfrog rt bce
       onComplete:
       - add_run_files /tmp/jfrog/. jfrog
-      onFailure:
-      - export JFROG_BUILD_STATUS=FAIL
-      - jfrog rt bce
-      - jfrog rt bp
+      <<: *failure
   - name: PublishBuildInfoStep
     type: PublishBuildInfo
     configuration:
