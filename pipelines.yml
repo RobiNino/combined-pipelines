@@ -30,7 +30,7 @@ pipelines:
         JFROG_CLI_BUILD_NUMBER: $run_number
         JFROG_CLI_BUILD_PROJECT: $project_key
         JFROG_CLI_BUILD_URL: $step_url
-        JFROG_BUILD_STATUS:
+        "JFROG_BUILD_STATUS":
           default: "PASS"
           values:
             - "PASS"
