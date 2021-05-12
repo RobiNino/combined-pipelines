@@ -17,6 +17,12 @@ resources:
 pipelines:
 - name: RobiNino_mvn_gradle_npm_pipelines_pipeline
   configuration:
+    environmentVariables:
+      readOnly:
+        JFROG_CLI_BUILD_NAME: build_name_aggregated
+        JFROG_CLI_BUILD_NUMBER: $run_number
+        JFROG_BUILD_STATUS: PASS
+        JFROG_CLI_BUILD_URL: $step_url
     runtime:
       type: image
       image:
@@ -27,9 +33,6 @@ pipelines:
   - name: MvnBuildStep
     type: MvnBuild
     configuration:
-      environmentVariables:
-        JFROG_BUILD_STATUS: PASS
-        JFROG_CLI_BUILD_URL: $step_url
       integrations:
       - name: robindev
       inputResources:
@@ -57,10 +60,6 @@ pipelines:
       onExecute:
       - cd $res_RobiNino_mvn_gradle_npm_pipelines_gitResource_resourcePath
       - export CI=true
-      - export JFROG_CLI_BUILD_NAME=build_name_aggregated
-      - export JFROG_CLI_BUILD_NUMBER=$run_number
-      - export JFROG_CLI_BUILD_URL=$step_url
-      - export JFROG_BUILD_STATUS=PASS
       - jfrog c add RobiNino_mvn_gradle_npm_pipelines_serverId --artifactory-url $int_robindev_url --user $int_robindev_user --apikey $int_robindev_apikey --enc-password=false
       - jfrog rt npm-config --server-id-resolve RobiNino_mvn_gradle_npm_pipelines_serverId --repo-resolve global-npm
       - jfrog rt npmi
