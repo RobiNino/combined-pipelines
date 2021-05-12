@@ -31,20 +31,6 @@ pipelines:
         JFROG_CLI_BUILD_PROJECT: $project_key
         JFROG_CLI_BUILD_URL: $step_url
   steps:
-  - name: MvnBuildStep
-    type: MvnBuild
-    configuration:
-      environmentVariables:
-        JFROG_BUILD_STATUS: PASS
-      integrations:
-      - name: robindev
-      inputResources:
-      - name: RobiNino_mvn_gradle_npm_pipelines_gitResource
-      mvnCommand: clean install
-      resolverSnapshotRepo: maven-virtual
-      resolverReleaseRepo: maven-virtual
-    execution:
-      <<: *handleFailure
   - name: NpmBuildStep
     type: Bash
     configuration:
@@ -61,11 +47,27 @@ pipelines:
       - cd $res_RobiNino_mvn_gradle_npm_pipelines_gitResource_resourcePath
       - jfrog rt c RobiNino_mvn_gradle_npm_pipelines_serverId --url $int_robindev_url --user $int_robindev_user --apikey $int_robindev_apikey --enc-password=false
       - jfrog rt npm-config --server-id-resolve RobiNino_mvn_gradle_npm_pipelines_serverId --repo-resolve global-npm
-      - jfrog rt npmiiii
+      - jfrog rt npmi
       - jfrog rt bag
       - jfrog rt bce
       onComplete:
       - add_run_files /tmp/jfrog/. jfrog
+      <<: *handleFailure
+  - name: MvnBuildStep
+    type: MvnBuild
+    configuration:
+      environmentVariables:
+        JFROG_BUILD_STATUS: PASS
+      integrations:
+      - name: robindev
+      inputResources:
+      - name: RobiNino_mvn_gradle_npm_pipelines_gitResource
+      inputSteps:
+      - name: NpmBuildStep
+      mvnCommand: cleannn install
+      resolverSnapshotRepo: maven-virtual
+      resolverReleaseRepo: maven-virtual
+    execution:
       <<: *handleFailure
   - name: PublishBuildInfoStep
     type: PublishBuildInfo
@@ -75,7 +77,7 @@ pipelines:
       outputResources:
       - name: RobiNino_mvn_gradle_npm_pipelines_buildInfoResource
       inputSteps:
-      - name: NpmBuildStep
+      - name: MvnBuildStep
       forceXrayScan: true
     execution:
       onComplete:
