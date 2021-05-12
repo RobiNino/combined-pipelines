@@ -20,6 +20,12 @@ pipelines:
     environmentVariables:
       readOnly:
         CI: "true"
+    runtime:
+      type: image
+      image:
+        custom:
+          name: releases-docker.jfrog.io/jfrog/jfrog-cli-full
+          tag: latest
   steps:
   - name: MvnBuildStep
     type: MvnBuild
