@@ -50,7 +50,7 @@ pipelines:
       - jfrog rt bce
       onComplete:
       - add_run_files /tmp/jfrog/. jfrog
-       - <<: *handleFailure
+      - <<: *handleFailure
   - name: MvnBuildStep
     type: MvnBuild
     configuration:
