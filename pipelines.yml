@@ -56,7 +56,7 @@ pipelines:
       onExecute:
       - cd $res_RobiNino_mvn_gradle_npm_pipelines_gitResource_resourcePath
       - export CI=true
-      - jfrog rt c RobiNino_mvn_gradle_npm_pipelines_serverId --artifactory-url $int_robindev_url --user $int_robindev_user --apikey $int_robindev_apikey --enc-password=false
+      - jfrog rt c RobiNino_mvn_gradle_npm_pipelines_serverId --url $int_robindev_url --user $int_robindev_user --apikey $int_robindev_apikey --enc-password=false
       - jfrog rt npm-config --server-id-resolve RobiNino_mvn_gradle_npm_pipelines_serverId --repo-resolve global-npm
       - jfrog rt npmi
 #      - jfrog rt npmp
