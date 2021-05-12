@@ -1,5 +1,5 @@
-# Basic function options
-handle-failure: &failure
+# Failure handling function
+handle-failure: &handleFailure
   onFailure:
     - export JFROG_BUILD_STATUS=FAIL
     - jfrog rt bce
@@ -29,16 +29,13 @@ pipelines:
         JFROG_CLI_BUILD_NAME: build_name_aggregated
         JFROG_CLI_BUILD_NUMBER: $run_number
         JFROG_CLI_BUILD_PROJECT: $project_key
-        JFROG_BUILD_STATUS: PASS
-          default: PASS
-          values:
-            - PASS
-            - FAIL
         JFROG_CLI_BUILD_URL: $step_url
   steps:
   - name: MvnBuildStep
     type: MvnBuild
     configuration:
+        environmentVariables:
+          JFROG_BUILD_STATUS: PASS
       integrations:
       - name: robindev
       inputResources:
@@ -47,10 +44,12 @@ pipelines:
       resolverSnapshotRepo: maven-virtual
       resolverReleaseRepo: maven-virtual
     execution:
-      <<: *failure
+      <<: *handleFailure
   - name: NpmBuildStep
     type: Bash
     configuration:
+        environmentVariables:
+          JFROG_BUILD_STATUS: PASS
       integrations:
       - name: robindev
       inputResources:
@@ -67,10 +66,7 @@ pipelines:
       - jfrog rt bce
       onComplete:
       - add_run_files /tmp/jfrog/. jfrog
-      onFailure:
-      - export JFROG_BUILD_STATUS=FAIL
-      - jfrog rt bce
-      - jfrog rt bp
+      <<: *handleFailure
   - name: PublishBuildInfoStep
     type: PublishBuildInfo
     configuration:
