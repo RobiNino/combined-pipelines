@@ -63,7 +63,7 @@ pipelines:
       - export JFROG_BUILD_STATUS=PASS
       - jfrog c add RobiNino_mvn_gradle_npm_pipelines_serverId --artifactory-url $int_robindev_url --user $int_robindev_user --apikey $int_robindev_apikey --enc-password=false
       - jfrog rt npm-config --server-id-resolve RobiNino_mvn_gradle_npm_pipelines_serverId --repo-resolve global-npm
-      - npmi
+      - jfrog rt npmi
       - jfrog rt bag
       - jfrog rt bce
       onComplete:
