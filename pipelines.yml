@@ -37,8 +37,6 @@ pipelines:
       resolverSnapshotRepo: maven-virtual
       resolverReleaseRepo: maven-virtual
     execution:
-      onComplete:
-      - update_commit_status RobiNino_mvn_gradle_npm_pipelines_gitResource
       onFailure:
       - export JFROG_BUILD_STATUS=FAIL
       - jfrog rt bce
@@ -61,7 +59,6 @@ pipelines:
       - jfrog rt bag
       - jfrog rt bce
       onComplete:
-      - update_commit_status RobiNino_mvn_gradle_npm_pipelines_gitResource
       - add_run_files /tmp/jfrog/. jfrog
       onFailure:
       - export JFROG_BUILD_STATUS=FAIL
@@ -70,8 +67,13 @@ pipelines:
   - name: PublishBuildInfoStep
     type: PublishBuildInfo
     configuration:
+      inputResources:
+      - name: RobiNino_mvn_gradle_npm_pipelines_gitResource
       outputResources:
       - name: RobiNino_mvn_gradle_npm_pipelines_buildInfoResource
       inputSteps:
       - name: NpmBuildStep
       forceXrayScan: true
+    execution:
+      onComplete:
+      - update_commit_status RobiNino_mvn_gradle_npm_pipelines_gitResource
