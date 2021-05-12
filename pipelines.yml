@@ -12,42 +12,36 @@ resources:
   type: BuildInfo
   configuration:
     sourceArtifactory: robindev
-    buildName: $pipeline_name
+    buildName: build_name_aggregated
     buildNumber: $run_number
 pipelines:
 - name: RobiNino_mvn_gradle_npm_pipelines_pipeline
   steps:
-  - name: BuildStep
+  - name: NpmBuildStep
     type: Bash
     configuration:
-      inputResources:
-        - name: RobiNino_mvn_gradle_npm_pipelines_gitResource
       integrations:
-        - name: robindev
+      - name: robindev
+      inputResources:
+      - name: RobiNino_mvn_gradle_npm_pipelines_gitResource
     execution:
       onExecute:
-      - jfrog -v
       - cd $res_RobiNino_mvn_gradle_npm_pipelines_gitResource_resourcePath
       - export CI=true
-      - export JFROG_CLI_BUILD_NAME=$pipeline_name
+      - export JFROG_CLI_BUILD_NAME=build_name_aggregated
       - export JFROG_CLI_BUILD_NUMBER=$run_number
       - export JFROG_CLI_BUILD_URL=$step_url
-      - export JFROG_BUILD_RESULTS=PASS
-      - export JFROG_CLI_LOG_LEVEL=DEBUG
-      - jfrog rt c RobiNino_npm_example_pipelines_serverId --url $int_robindev_url
-        --user $int_robindev_user --apikey $int_robindev_apikey
-        --enc-password=false
-      - jfrog rt npm-config --server-id-resolve RobiNino_npm_example_pipelines_serverId
-        --repo-resolve global-npm --server-id-deploy RobiNino_npm_example_pipelines_serverId --repo-deploy global-npm
-      - jfrog rt npmi
-      - jfrog rt npm-publish
+      - export JFROG_BUILD_STATUS=PASS
+      - jfrog c add RobiNino_mvn_gradle_npm_pipelines_serverId --artifactory-url $int_robindev_url --user $int_robindev_user --apikey $int_robindev_apikey --enc-password=false
+      - jfrog rt npm-config --server-id-resolve RobiNino_mvn_gradle_npm_pipelines_serverId --repo-resolve global-npm
+      - npmi
       - jfrog rt bag
       - jfrog rt bce
       onComplete:
       - update_commit_status RobiNino_mvn_gradle_npm_pipelines_gitResource
       - add_run_files /tmp/jfrog/. jfrog
       onFailure:
-      - export JFROG_BUILD_RESULTS=FAIL
+      - export JFROG_BUILD_STATUS=FAIL
       - jfrog rt bce
       - jfrog rt bp
   - name: MvnBuildStep
@@ -60,11 +54,11 @@ pipelines:
       - name: robindev
       inputResources:
       - name: RobiNino_mvn_gradle_npm_pipelines_gitResource
+      inputSteps:
+      - name: NpmBuildStep
       mvnCommand: clean install
       resolverSnapshotRepo: maven-virtual
       resolverReleaseRepo: maven-virtual
-      inputSteps:
-      - name: BuildStep
     execution:
       onComplete:
       - update_commit_status RobiNino_mvn_gradle_npm_pipelines_gitResource
