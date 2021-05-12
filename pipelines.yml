@@ -20,6 +20,10 @@ pipelines:
     environmentVariables:
       readOnly:
         CI: "true"
+        JFROG_CLI_BUILD_NAME: build_name_aggregated
+        JFROG_CLI_BUILD_NUMBER: $run_number
+        JFROG_CLI_BUILD_PROJECT: $project_key
+        JFROG_CLI_BUILD_URL: $step_url
   steps:
   - name: MvnBuildStep
     type: MvnBuild
