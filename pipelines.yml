@@ -16,7 +16,34 @@ resources:
     buildNumber: $run_number
 pipelines:
 - name: RobiNino_mvn_gradle_npm_pipelines_pipeline
+  configuration:
+    runtime:
+      type: image
+      image:
+        custom:
+          name: releases-docker.jfrog.io/jfrog/jfrog-cli-full
+          tag: latest
   steps:
+  - name: MvnBuildStep
+    type: MvnBuild
+    configuration:
+      environmentVariables:
+        JFROG_BUILD_STATUS: PASS
+        JFROG_CLI_BUILD_URL: $step_url
+      integrations:
+      - name: robindev
+      inputResources:
+      - name: RobiNino_mvn_gradle_npm_pipelines_gitResource
+      mvnCommand: clean install
+      resolverSnapshotRepo: maven-virtual
+      resolverReleaseRepo: maven-virtual
+    execution:
+      onComplete:
+      - update_commit_status RobiNino_mvn_gradle_npm_pipelines_gitResource
+      onFailure:
+      - export JFROG_BUILD_STATUS=FAIL
+      - jfrog rt bce
+      - jfrog rt bp
   - name: NpmBuildStep
     type: Bash
     configuration:
@@ -44,33 +71,11 @@ pipelines:
       - export JFROG_BUILD_STATUS=FAIL
       - jfrog rt bce
       - jfrog rt bp
-  - name: MvnBuildStep
-    type: MvnBuild
-    configuration:
-      environmentVariables:
-        JFROG_BUILD_STATUS: PASS
-        JFROG_CLI_BUILD_URL: $step_url
-      integrations:
-      - name: robindev
-      inputResources:
-      - name: RobiNino_mvn_gradle_npm_pipelines_gitResource
-      inputSteps:
-      - name: NpmBuildStep
-      mvnCommand: clean install
-      resolverSnapshotRepo: maven-virtual
-      resolverReleaseRepo: maven-virtual
-    execution:
-      onComplete:
-      - update_commit_status RobiNino_mvn_gradle_npm_pipelines_gitResource
-      onFailure:
-      - export JFROG_BUILD_STATUS=FAIL
-      - jfrog rt bce
-      - jfrog rt bp
   - name: PublishBuildInfoStep
     type: PublishBuildInfo
     configuration:
       outputResources:
       - name: RobiNino_mvn_gradle_npm_pipelines_buildInfoResource
       inputSteps:
-      - name: MvnBuildStep
+      - name: NpmBuildStep
       forceXrayScan: true
