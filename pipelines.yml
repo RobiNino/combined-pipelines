@@ -31,10 +31,10 @@ pipelines:
         JFROG_CLI_BUILD_PROJECT: $project_key
         JFROG_CLI_BUILD_URL: $step_url
         JFROG_BUILD_STATUS:
-          default: PASS
+          default: "PASS"
           values:
-            - PASS
-            - FAIL
+            - "PASS"
+            - "FAIL"
   steps:
   - name: MvnBuildStep
     type: MvnBuild
