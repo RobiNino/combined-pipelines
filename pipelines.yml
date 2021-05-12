@@ -11,7 +11,7 @@ resources:
 - name: RobiNino_mvn_gradle_npm_pipelines_buildInfoResource
   type: BuildInfo
   configuration:
-    sourceArtifactory: robindev
+    sourceArtifactory: robi_eco
     buildName: build_name_aggregated
     buildNumber: $run_number
 pipelines:
@@ -31,7 +31,7 @@ pipelines:
       environmentVariables:
         JFROG_BUILD_STATUS: PASS
       integrations:
-      - name: robindev
+      - name: robi_eco
       inputResources:
       - name: RobiNino_mvn_gradle_npm_pipelines_gitResource
       mvnCommand: clean install
@@ -48,7 +48,7 @@ pipelines:
       environmentVariables:
         JFROG_BUILD_STATUS: PASS
       integrations:
-      - name: robindev
+      - name: robi_eco
       inputResources:
       - name: RobiNino_mvn_gradle_npm_pipelines_gitResource
       inputSteps:
@@ -56,7 +56,7 @@ pipelines:
     execution:
       onExecute:
       - cd $res_RobiNino_mvn_gradle_npm_pipelines_gitResource_resourcePath
-      - jfrog rt c RobiNino_mvn_gradle_npm_pipelines_serverId --url $int_robindev_url --user $int_robindev_user --apikey $int_robindev_apikey --enc-password=false
+      - jfrog rt c RobiNino_mvn_gradle_npm_pipelines_serverId --url $int_robi_eco_url --user $int_robi_eco_user --apikey $int_robi_eco_apikey --enc-password=false
       - jfrog rt npm-config --server-id-resolve RobiNino_mvn_gradle_npm_pipelines_serverId --repo-resolve global-npm
       - jfrog rt npmi
       - jfrog rt bag
@@ -73,7 +73,7 @@ pipelines:
       environmentVariables:
         JFROG_BUILD_STATUS: PASS
       integrations:
-      - name: robindev
+      - name: robi_eco
       inputResources:
       - name: RobiNino_mvn_gradle_npm_pipelines_gitResource
       inputSteps:
