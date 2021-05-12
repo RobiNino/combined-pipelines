@@ -31,7 +31,7 @@ pipelines:
         JFROG_CLI_BUILD_PROJECT: $project_key
         JFROG_BUILD_STATUS:
           default: PASS
-          description: env2 description
+          description: env2 descriptionm
           values:
             - PASS
             - FAIL
