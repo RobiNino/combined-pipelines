@@ -29,12 +29,11 @@ pipelines:
         JFROG_CLI_BUILD_NAME: build_name_aggregated
         JFROG_CLI_BUILD_NUMBER: $run_number
         JFROG_CLI_BUILD_PROJECT: $project_key
-        JFROG_BUILD_STATUS:
-          default: PASS
-          description: env2 descriptionm
+        'JFROG_BUILD_STATUS':
+          default: 'PASS'
           values:
-            - PASS
-            - FAIL
+            - 'PASS'
+            - 'FAIL'
         JFROG_CLI_BUILD_URL: $step_url
   steps:
   - name: MvnBuildStep
