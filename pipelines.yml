@@ -21,6 +21,7 @@ pipelines:
       readOnly:
         JFROG_CLI_BUILD_NAME: build_name_aggregated
         JFROG_CLI_BUILD_NUMBER: $run_number
+        JFROG_CLI_BUILD_PROJECT: $project_key
         JFROG_BUILD_STATUS: PASS
         JFROG_CLI_BUILD_URL: $step_url
         JFROG_CLI_LOG_LEVEL: DEBUG
