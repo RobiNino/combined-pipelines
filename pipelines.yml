@@ -1,5 +1,5 @@
 resources:
-- name: RobiNino_combined-pipelines_gitResource
+- name: RobiNino_combined_pipelines_gitResource
   type: GitRepo
   configuration:
     path: RobiNino/mvn-gradle-npm-pipelines
@@ -8,14 +8,14 @@ resources:
       pullRequestCreate: true
     branches:
       include: main
-- name: RobiNino_combined-pipelines_buildInfoResource
+- name: RobiNino_combined_pipelines_buildInfoResource
   type: BuildInfo
   configuration:
     sourceArtifactory: robindev
     buildName: build_name_aggregated
     buildNumber: $run_number
 pipelines:
-- name: RobiNino_combined-pipelines_pipeline
+- name: RobiNino_combined_pipelines_pipeline
   configuration:
     environmentVariables:
       readOnly:
@@ -33,7 +33,7 @@ pipelines:
       integrations:
       - name: robindev
       inputResources:
-      - name: RobiNino_combined-pipelines_gitResource
+      - name: RobiNino_combined_pipelines_gitResource
       mvnCommand: clean install
       resolverSnapshotRepo: maven-virtual
       resolverReleaseRepo: maven-virtual
@@ -50,14 +50,14 @@ pipelines:
       integrations:
       - name: robindev
       inputResources:
-      - name: RobiNino_combined-pipelines_gitResource
+      - name: RobiNino_combined_pipelines_gitResource
       inputSteps:
       - name: MvnBuildStep
     execution:
       onExecute:
-      - cd $res_RobiNino_combined-pipelines_gitResource_resourcePath
-      - jfrog rt c RobiNino_combined-pipelines_serverId --url $int_robindev_url --user $int_robindev_user --apikey $int_robindev_apikey --enc-password=false
-      - jfrog rt npm-config --server-id-resolve RobiNino_combined-pipelines_serverId --repo-resolve global-npm
+      - cd $res_RobiNino_combined_pipelines_gitResource_resourcePath
+      - jfrog rt c RobiNino_combined_pipelines_serverId --url $int_robindev_url --user $int_robindev_user --apikey $int_robindev_apikey --enc-password=false
+      - jfrog rt npm-config --server-id-resolve RobiNino_combined_pipelines_serverId --repo-resolve global-npm
       - jfrog rt npmi
       - jfrog rt bag
       - jfrog rt bce
@@ -75,7 +75,7 @@ pipelines:
       integrations:
       - name: robindev
       inputResources:
-      - name: RobiNino_combined-pipelines_gitResource
+      - name: RobiNino_combined_pipelines_gitResource
       inputSteps:
       - name: NpmBuildStep
       gradleCommand: clean aP
@@ -89,12 +89,12 @@ pipelines:
     type: PublishBuildInfo
     configuration:
       inputResources:
-      - name: RobiNino_combined-pipelines_gitResource
+      - name: RobiNino_combined_pipelines_gitResource
       outputResources:
-      - name: RobiNino_combined-pipelines_buildInfoResource
+      - name: RobiNino_combined_pipelines_buildInfoResource
       inputSteps:
       - name: GradleBuildStep
       forceXrayScan: true
     execution:
       onComplete:
-      - update_commit_status RobiNino_combined-pipelines_gitResource
+      - update_commit_status RobiNino_combined_pipelines_gitResource
