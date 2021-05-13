@@ -24,6 +24,7 @@ pipelines:
         JFROG_CLI_BUILD_NUMBER: $run_number
         JFROG_CLI_BUILD_PROJECT: $project_key
         JFROG_CLI_BUILD_URL: $step_url
+        JFROG_CLI_LOG_LEVEL: DEBUG
   steps:
   - name: MvnBuildStep
     type: MvnBuild
