@@ -81,6 +81,7 @@ pipelines:
       - name: NpmBuildStep
       gradleCommand: artifactoryPublish
       resolverRepo: gradle-virtual
+      useWrapper: true
     execution:
       onFailure:
       - export JFROG_BUILD_STATUS=FAIL
