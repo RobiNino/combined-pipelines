@@ -79,7 +79,7 @@ pipelines:
       - name: RobiNino_combined_pipelines_gitResource
       inputSteps:
       - name: NpmBuildStep
-      gradleCommand: clean aP
+      gradleCommand: artifactoryPublish
       resolverRepo: gradle-virtual
     execution:
       onFailure:
