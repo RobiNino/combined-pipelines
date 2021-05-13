@@ -3,7 +3,7 @@ resources:
   type: GitRepo
   configuration:
     path: RobiNino/combined-pipelines
-    gitProvider: github_robi
+    gitProvider: github_RobiNino_combined_pipelines_integration
     buildOn:
       pullRequestCreate: true
     branches:
@@ -11,8 +11,8 @@ resources:
 - name: RobiNino_combined_pipelines_buildInfoResource
   type: BuildInfo
   configuration:
-    sourceArtifactory: robindev
-    buildName: build_name_aggregated
+    sourceArtifactory: rt_RobiNino_combined_pipelines_integration
+    buildName: combined-pipelines-main
     buildNumber: $run_number
 pipelines:
 - name: RobiNino_combined_pipelines_pipeline
@@ -20,24 +20,41 @@ pipelines:
     environmentVariables:
       readOnly:
         CI: "true"
-        JFROG_CLI_BUILD_NAME: build_name_aggregated
+        JFROG_CLI_BUILD_NAME: combined-pipelines-main
         JFROG_CLI_BUILD_NUMBER: $run_number
         JFROG_CLI_BUILD_PROJECT: $project_key
         JFROG_CLI_BUILD_URL: $step_url
-        JFROG_CLI_LOG_LEVEL: DEBUG
   steps:
+  - name: GradleBuildStep
+    type: GradleBuild
+    configuration:
+      environmentVariables:
+        JFROG_BUILD_STATUS: PASS
+      integrations:
+      - name: rt_RobiNino_combined_pipelines_integration
+      inputResources:
+      - name: RobiNino_combined_pipelines_gitResource
+      gradleCommand: clean artifactoryPublish
+      resolverRepo: gradle-virtual
+    execution:
+      onFailure:
+      - export JFROG_BUILD_STATUS=FAIL
+      - jfrog rt bce
+      - jfrog rt bp
   - name: MvnBuildStep
     type: MvnBuild
     configuration:
       environmentVariables:
         JFROG_BUILD_STATUS: PASS
       integrations:
-      - name: robindev
+      - name: rt_RobiNino_combined_pipelines_integration
       inputResources:
       - name: RobiNino_combined_pipelines_gitResource
+      inputSteps:
+      - name: GradleBuildStep
       mvnCommand: clean install
-      resolverSnapshotRepo: maven-virtual
-      resolverReleaseRepo: maven-virtual
+      resolverSnapshotRepo: maven-virtual-2
+      resolverReleaseRepo: maven-virtual-2
     execution:
       onFailure:
       - export JFROG_BUILD_STATUS=FAIL
@@ -49,7 +66,7 @@ pipelines:
       environmentVariables:
         JFROG_BUILD_STATUS: PASS
       integrations:
-      - name: robindev
+      - name: rt_RobiNino_combined_pipelines_integration
       inputResources:
       - name: RobiNino_combined_pipelines_gitResource
       inputSteps:
@@ -57,32 +74,16 @@ pipelines:
     execution:
       onExecute:
       - cd $res_RobiNino_combined_pipelines_gitResource_resourcePath
-      - jfrog rt c RobiNino_combined_pipelines_serverId --url $int_robindev_url --user $int_robindev_user --apikey $int_robindev_apikey --enc-password=false
-      - jfrog rt npm-config --server-id-resolve RobiNino_combined_pipelines_serverId --repo-resolve global-npm
+      - jfrog rt c RobiNino_combined_pipelines_serverId --url $int_rt_RobiNino_combined_pipelines_integration_url
+        --user $int_rt_RobiNino_combined_pipelines_integration_user --apikey $int_rt_RobiNino_combined_pipelines_integration_apikey
+        --enc-password=false
+      - jfrog rt npm-config --server-id-resolve RobiNino_combined_pipelines_serverId
+        --repo-resolve global-npm
       - jfrog rt npmi
       - jfrog rt bag
       - jfrog rt bce
       onComplete:
       - add_run_files /tmp/jfrog/. jfrog
-      onFailure:
-      - export JFROG_BUILD_STATUS=FAIL
-      - jfrog rt bce
-      - jfrog rt bp
-  - name: GradleBuildStep
-    type: GradleBuild
-    configuration:
-      environmentVariables:
-        JFROG_BUILD_STATUS: PASS
-      integrations:
-      - name: robindev
-      inputResources:
-      - name: RobiNino_combined_pipelines_gitResource
-      inputSteps:
-      - name: NpmBuildStep
-      gradleCommand: artifactoryPublish
-      resolverRepo: gradle-virtual
-      useWrapper: true
-    execution:
       onFailure:
       - export JFROG_BUILD_STATUS=FAIL
       - jfrog rt bce
@@ -95,7 +96,7 @@ pipelines:
       outputResources:
       - name: RobiNino_combined_pipelines_buildInfoResource
       inputSteps:
-      - name: GradleBuildStep
+      - name: NpmBuildStep
       forceXrayScan: true
     execution:
       onComplete:
